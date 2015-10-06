@@ -14,10 +14,10 @@ namespace Typoheads\Formhandler\Component;
  *                                                                        */
 
 /**
- * Component Manager originally written for the extension 'gimmefive'. 
+ * Component Manager originally written for the extension 'gimmefive'.
  * This is a backport of the Component Manager of FLOW3. It's based
  * on code mainly written by Robert Lemke. Thanx to the FLOW3 team for all the great stuff!
- * 
+ *
  * Refactored for usage with Formhandler.
  *
  * @author	Reinhard Führicht <rf@typoheads.at>
@@ -60,7 +60,7 @@ class Manager {
 			$this->classFiles = array();
 		}
 		$this->loadTypoScriptConfig();
-		spl_autoload_register(array($this, 'loadClass'));
+		#spl_autoload_register(array($this, 'loadClass'));
 	}
 
 	private function __clone() {}
@@ -89,7 +89,7 @@ class Manager {
 				$conf = $overrideSettings['settings.']['additionalIncludePaths.'];
 			}
 			if(TYPO3_MODE === 'BE') {
-				$tsconfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getModTSconfig(intval($_GET['id']), 'tx_formhandler_mod1'); 
+				$tsconfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getModTSconfig(intval($_GET['id']), 'tx_formhandler_mod1');
 				if (is_array($tsconfig['properties']['config.']['additionalIncludePaths.'])) {
 					$conf = $tsconfig['properties']['config.']['additionalIncludePaths.'];
 					$conf = $this->getParsedIncludePaths($conf);
@@ -112,7 +112,7 @@ class Manager {
 	/**
 	 * Returns a component object from the cache. If there is no object stored already, a new one is created and stored in the cache.
 	 *
-	 * @param string $componentName 
+	 * @param string $componentName
 	 * @return void
 	 * @author Robert Lemke <robert@typo3.org>
 	 * @author adapted for TYPO3v4 by Jochen Rau <jochen.rau@typoplanet.de>
@@ -127,8 +127,8 @@ class Manager {
 		} elseif ('Typoheads\Formhandler\Utils\UtilityFuncs' === $componentName) {
 			return \Typoheads\Formhandler\Utils\UtilityFuncs::getInstance();
 		}
-		
-		$arguments =  array_slice(func_get_args(), 1, NULL, TRUE); 
+
+		$arguments =  array_slice(func_get_args(), 1, NULL, TRUE);
 		$componentObject = $this->createComponentObject($componentName, $arguments);
 
 		return $componentObject;
@@ -137,13 +137,13 @@ class Manager {
 	/**
 	 * Requires a class file and instantiates a class.
 	 *
-	 * @param string $componentName 
+	 * @param string $componentName
 	 * @param array	$overridingConstructorArguments
 	 * @return object
 	 * @author Robert Lemke <robert@typo3.org>
 	 * @author adapted for TYPO3v4 by Jochen Rau <jochen.rau@typoplanet.de>
 	 */
-	protected function createComponentObject($componentName, array $overridingConstructorArguments) {	
+	protected function createComponentObject($componentName, array $overridingConstructorArguments) {
 		$className = $componentName;
 
 		if (!class_exists($className, TRUE)) {
