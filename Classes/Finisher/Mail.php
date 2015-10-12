@@ -55,11 +55,11 @@ namespace Typoheads\Formhandler\Finisher;
  * # attaches a PDF file with submitted values
  * finishers.2.config.user.attachPDF.class = Tx_Formhandler_Generator_TcPdf
  * finishers.2.config.user.attachPDF.exportFields = firstname,lastname,email,interests,pid,submission_date,ip
- * 
+ *
  * #configure how the attached files are prefixes (PDF/HTML).
  * # both files prefixed equally:
  * finishers.2.config.user.filePrefix = MyContactForm_
- * 
+ *
  * # different prefixes for the files.
  * finishers.2.config.html = MyContactForm_
  * finishers.2.config.pdf = MyContactFormPDF_
@@ -166,7 +166,7 @@ class Mail extends AbstractFinisher {
 		if (intval($this->utilityFuncs->getSingle($this->settings[$type], 'disable')) === 1) {
 			$this->utilityFuncs->debugMessage('mail_disabled', array($type));
 			$doSend = FALSE;
-		} 
+		}
 
 		$mailSettings = $this->settings[$type];
 		$plain = $this->parseTemplate($type, 'plain');
@@ -342,6 +342,14 @@ class Mail extends AbstractFinisher {
 			$files = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $mailSettings['attachGeneratedFiles']);
 			foreach($files as $file) {
 				unlink($file);
+			}
+		}
+		// delete generated files
+		if ($mailSettings['deleteAttachments'] && $mailSettings['attachment']) {
+			foreach ($mailSettings['attachment'] as $idx => $attachment) {
+				if (strlen($attachment) > 0 && @file_exists($attachment)) {
+					unlink($attachment);
+				}
 			}
 		}
 	}
@@ -608,7 +616,7 @@ class Mail extends AbstractFinisher {
 					case 'attachment':
 						$emailSettings[$option] = $this->parseFilesList($currentSettings, $type, $option);
 						break;
-					
+
 					case 'embedFiles':
 						$emailSettings[$option] = $this->parseEmbedFilesList($currentSettings, $type, $option);
 						break;
@@ -648,7 +656,7 @@ class Mail extends AbstractFinisher {
 						if (intval($htmlEmailAsAttachment) === 1) {
 							$emailSettings['deleteGeneratedFiles'] = 1;
 						}
-					
+
 						break;
 					case 'filePrefix':
 						$filePrefix = $this->utilityFuncs->getSingle($currentSettings, 'filePrefix');
